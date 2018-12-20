@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -6,7 +7,7 @@ const session = require("express-session");
 //const mongooseStore = require("connect-mongo")(session);
 
 // Tracking login sessions
-app.use(session({ secret: "Caramba$18", resave: true, saveUninitialized: false }));
+app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
 
 // parsing incoming requests
 app.use(bodyParser.json());
@@ -32,7 +33,7 @@ app.use((err, req, res, next) => res.status(err.status || 500).json({ message: e
 mongoose.connection.on("error", console.error.bind(console, "Connection error:"));
 
 mongoose.connect(
-  "mongodb://localhost:27017/authentication",
+  process.env.DB_URL,
   { useNewUrlParser: true, useCreateIndex: true },
   err => {
     if (!err) {
