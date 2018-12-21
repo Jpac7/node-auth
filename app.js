@@ -4,10 +4,17 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
-//const mongooseStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo")(session);
 
 // Tracking login sessions
-app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: false }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  })
+);
 
 // parsing incoming requests
 app.use(bodyParser.json());
